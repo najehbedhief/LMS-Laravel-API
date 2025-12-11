@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,5 +19,10 @@ Route::get('/reset-password/{token}', function ($token) {
     return "Password reset token: $token";
 })->name('password.reset');
 
-Route::post('change-password', [AuthController::class, 'changePassword'])->middleware('auth:sanctum');
 
+// Course
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('courses', CourseController::class);
+    Route::post('course/{id}', [CourseController::class,'updateCourse']);
+    Route::post('change-password', [AuthController::class, 'changePassword']);
+});
