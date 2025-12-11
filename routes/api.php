@@ -17,3 +17,6 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset']);
 Route::get('/reset-password/{token}', function ($token) {
     return "Password reset token: $token";
 })->name('password.reset');
+
+Route::post('change-password', [AuthController::class, 'changePassword'])->middleware('auth:sanctum');
+

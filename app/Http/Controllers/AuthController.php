@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
@@ -45,5 +46,27 @@ class AuthController extends Controller
             'User' => $user,
             'Token' => $user->createToken('api-token')->plainTextToken,
         ], 201);
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+
+        $user = auth()->user();
+        // Check if old password matches
+        if (! \Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Current password is incorrect.',
+            ], 400);
+        }
+        // Update password
+        $user->update([
+            'password' => \Hash::make($request->new_password),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password changed successfully.',
+        ], 200);
     }
 }
