@@ -68,7 +68,7 @@ class CourseController extends Controller
             return response()->json($course, '200');
 
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Task not found'], 404);
+            return response()->json(['error' => 'Course not found'], 404);
         } catch (Exception $e) {
             return response()->json(['error' => 'Something went wrong'], 500);
         }
@@ -125,11 +125,11 @@ class CourseController extends Controller
             $course = Course::findOrFail($id);
             $course->delete();
 
-            return response()->json('Task Deleted successfully', 200);
+            return response()->json('Course Deleted successfully', 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Task not found'], 404);
+            return response()->json(['error' => 'Course not found'], 404);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Something went wrong while deleting the task'], 500);
+            return response()->json(['error' => 'Something went wrong while deleting the course'], 500);
         }
     }
 }
