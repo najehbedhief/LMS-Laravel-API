@@ -28,5 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('change-password', [AuthController::class, 'changePassword']);
 
     Route::apiResource('lessons', LessonController::class);
-
+    
+    Route::post('enroll/course/{id}', [CourseController::class , 'enrollToCourse']);
+    
 });
