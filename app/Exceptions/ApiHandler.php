@@ -48,7 +48,7 @@ class ApiHandler
                 );
             }
 
-            return $this->errorResponse('Server error', 500);
+            //return $this->errorResponse('Server error', 500);
         }
 
         return null;

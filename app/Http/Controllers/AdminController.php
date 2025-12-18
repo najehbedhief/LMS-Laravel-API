@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-use App\Models\RoleRequest;
+use App\Repositories\Interfaces\RoleRequestInterface;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
+    public function __construct(RoleRequestInterface $roleRequestRepo)
+    {
+        $this->roleRequestRepo = $roleRequestRepo;
+    }
+
     public function approveRequest($requestId)
     {
         return DB::transaction(function () use ($requestId) {
 
-            $roleRequest = RoleRequest::where('id', $requestId)
-                ->where('status', 'pending')
-                ->firstOrFail();
-
-            $role = Role::where('name', $roleRequest->requested_role)->firstOrFail();
-
-            $roleRequest->user->roles()->syncWithoutDetaching([$role->id]);
-
-            $roleRequest->update(['status' => 'approved']);
+            $roleRequest = $this->roleRequestRepo->getPendingByIdOrFail($requestId);
+            $this->roleRequestRepo->approveRequest($roleRequest);
 
             return response()->json([
                 'message' => 'Role approved successfully',
@@ -32,11 +29,9 @@ class AdminController extends Controller
     {
         return DB::transaction(function () use ($requestId) {
 
-            $roleRequest = RoleRequest::where('id', $requestId)
-                ->where('status', 'pending')
-                ->firstOrFail();
+            $roleRequest = $this->roleRequestRepo->getPendingByIdOrFail($requestId);
 
-            $roleRequest->update(['status' => 'rejected']);
+            $this->roleRequestRepo->rejectRequest($roleRequest);
 
             return response()->json([
                 'message' => 'Role request rejected',
