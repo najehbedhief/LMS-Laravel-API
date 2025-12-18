@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\RoleController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LessonProgressController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -27,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('lessons', LessonController::class);
+    Route::post('/lessons/{lesson}/progress', [LessonProgressController::class, 'lessonProgress']);
+
 
     Route::post('enroll/course/{id}', [CourseController::class, 'enrollToCourse']);
 

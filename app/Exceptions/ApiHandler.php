@@ -2,16 +2,17 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Http\Request;
 use Throwable;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use App\Traits\ApiResponse;
 
 class ApiHandler
 {
@@ -47,8 +48,17 @@ class ApiHandler
                     $e->errors()
                 );
             }
+             // DUPLICATE KEY / UNIQUE CONSTRAINT
+            if ($e instanceof QueryException) {
+                if ($e->getCode() === '23000') {
+                    return $this->errorResponse(
+                        'Duplicate resource or already exists',
+                        409
+                    );
+                }
+            }
 
-            //return $this->errorResponse('Server error', 500);
+            return $this->errorResponse('Server error', 500);
         }
 
         return null;
