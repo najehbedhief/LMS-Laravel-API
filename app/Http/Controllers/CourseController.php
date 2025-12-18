@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Services\FileStorageService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller
 {

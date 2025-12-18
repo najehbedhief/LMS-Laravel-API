@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangePasswordRequest;
-use App\Http\Requests\LoginUserRequest;
-use App\Http\Requests\RegisterUserRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\ChangePasswordRequest;
 
 class AuthController extends Controller
 {
@@ -20,10 +21,14 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $studentRole = Role::where('name', 'Student')->firstOrFail();
+
+        $user->roles()->attach($studentRole->id);
+
         return response()->json([
             'status' => '201',
             'Message' => 'User register successfully',
-            'user' => $user,
+            'user' => $user->load('roles'),
         ]);
     }
 
@@ -43,7 +48,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login Successful',
-            'User' => $user,
+            'User' => $user->roles,
             'Token' => $user->createToken('api-token')->plainTextToken,
         ], 201);
     }
