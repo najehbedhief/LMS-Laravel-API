@@ -18,7 +18,11 @@ Route::get('/reset-password/{token}', function ($token) {
     return "Password reset token: $token";
 })->name('password.reset');
 
-// Course
+
+// Courses
+Route::get('courses', [CourseController::class, 'index']);
+Route::get('courses/{course}', [CourseController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('change-password', [AuthController::class, 'changePassword']);
 

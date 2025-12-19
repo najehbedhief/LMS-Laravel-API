@@ -2,14 +2,19 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Course;
-use Illuminate\Auth\Access\Response;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CoursePolicy
 {
     use HandlesAuthorization;
+
+    public function before(User $user, string $ability): ?bool
+    {
+        return $user->isAdmin() ? true : null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -47,7 +52,7 @@ class CoursePolicy
      */
     public function delete(User $user, Course $course): bool
     {
-        return false;
+        return $user->id === $course->user_id;
     }
 
     /**

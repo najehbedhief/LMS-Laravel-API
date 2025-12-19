@@ -16,17 +16,12 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         $user = $request->user();
-        if (! $user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
 
-        // Admin bypass → Full access
-        if ($user->roles()->where('name', 'Admin')->exists()) {
-            return $next($request);
-        }
+        $hasAccess = $user->roles()
+            ->whereIn('name', array_merge($roles, ['Admin']))
+            ->exists();
 
-        $hasRole = $user->roles()->whereIn('name', $roles)->exists();
-        if (! $hasRole) {
+        if (! $hasAccess) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 

@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LessonProgress::class);
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->roles()->where('name', 'Admin')->exists();
+    }
 }
