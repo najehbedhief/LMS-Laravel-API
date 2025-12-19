@@ -7,11 +7,14 @@ use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Services\FileStorageService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
+    use ApiResponse;
+
     public function __construct(private FileStorageService $fileStorage)
     {
         $this->fileStorage = $fileStorage;
@@ -39,11 +42,7 @@ class CourseController extends Controller
         }
         $course = Course::create($validated);
 
-        return response()->json([
-            'status' => '200',
-            'message' => 'Course created successfully',
-            'data' => new CourseResource($course)
-        ]);
+        return $this->successResponse(new CourseResource($course), 'Course created successfully', 201);
     }
 
     /**
@@ -79,13 +78,13 @@ class CourseController extends Controller
         $this->authorize('delete', $course);
         $course->delete();
 
-        return response()->json('Course Deleted successfully', 200);
+        return $this->successResponse(null, 'Course deleted successfully', 200);
     }
 
     public function enrollToCourse(Request $request, Course $course)
     {
         $course->enrolledUsers()->attach(Auth::id());
 
-        return response()->json('User attached successfully', 200);
+        return $this->successResponse(null, 'User enrolled successfully',200);
     }
 }

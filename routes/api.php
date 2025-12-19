@@ -28,14 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:Instructor')->group(function () {
         Route::apiResource('courses', CourseController::class)->except(['index', 'show']);
-        Route::post('course/{id}', [CourseController::class, 'updateCourse']);
+        Route::post('course/{course}', [CourseController::class, 'updateCourse']);
     });
 
     Route::apiResource('lessons', LessonController::class);
     Route::post('/lessons/{lesson}/progress', [LessonProgressController::class, 'lessonProgress']);
 
 
-    Route::post('enroll/course/{id}', [CourseController::class, 'enrollToCourse']);
+    Route::post('enroll/course/{course}', [CourseController::class, 'enrollToCourse']);
 
     Route::middleware('role:Student')->group(function () {
         Route::post('/request-role', [RoleController::class, 'requestRole']);
